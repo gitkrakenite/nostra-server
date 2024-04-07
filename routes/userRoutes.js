@@ -19,7 +19,6 @@ router.get("/", allUsers);
 router.post("/check", checkIfUserAlreadyExists);
 router.get("/:id", getUser);
 router.delete("/:id", protect, deleteUser);
-
-router.put("/update/:id", protect, updateMyAccount);
+router.put("/:id", protect, updateMyAccount);
 
 module.exports = router;

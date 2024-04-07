@@ -31,14 +31,24 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    mainCat: {
-      type: String,
-      required: true,
-    },
-    subCat: {
-      type: String,
-      required: true,
-    },
+    categories: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    sizes: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
+    availableColors: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     price: {
       type: Number,
       required: true,

@@ -7,12 +7,11 @@ const {
   fetchOnOffer,
   fetchTrending,
   fetchSpecificProduct,
-  mainCategoryFetch,
-  subCategoryFetch,
   deleteProduct,
   commentOnProduct,
   likeAProduct,
   updateSpecificProduct,
+  categoryFetchProducts,
 } = require("../controllers/productController");
 
 const { protect } = require("../middlewares/authMiddleware");
@@ -24,8 +23,7 @@ router.post("/comment/:id", protect, commentOnProduct);
 router.post("/like/:id", protect, likeAProduct);
 router.get("/", fetchAllProducts);
 router.get("/:id", fetchSpecificProduct);
-router.post("/maincat", mainCategoryFetch);
-router.post("/subcat", subCategoryFetch);
+router.post("/cat", categoryFetchProducts);
 router.post("/offer", fetchOnOffer);
 router.post("/trending", fetchTrending);
 

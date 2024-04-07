@@ -5,32 +5,30 @@ const User = require("../models/userModel");
 const createProduct = async (req, res) => {
   const {
     title,
-    mainCat,
-    subCat,
+    categories,
     price,
     description,
-    onOffer,
     fPhoto,
     sPhoto,
     tPhoto,
     vendor,
     quantity,
-    available,
+    sizes,
+    availableColors,
   } = req.body;
 
   const requiredFields = [
     "title",
-    "mainCat",
-    "subCat",
+    "categories",
     "price",
     "description",
-    "onOffer",
     "fPhoto",
     "sPhoto",
     "tPhoto",
     "vendor",
     "quantity",
-    "available",
+    "sizes",
+    "availableColors",
   ];
 
   for (const field of requiredFields) {
@@ -43,17 +41,16 @@ const createProduct = async (req, res) => {
   try {
     const product = await Product.create({
       title,
-      mainCat,
-      subCat,
+      categories, // Use the categories field
       price,
       description,
-      onOffer,
       fPhoto,
       sPhoto,
       tPhoto,
       vendor,
       quantity,
-      available,
+      sizes,
+      availableColors,
     });
 
     if (product) {
@@ -61,7 +58,7 @@ const createProduct = async (req, res) => {
       return;
     }
   } catch (error) {
-    res.status(500).send("something went wrong: " + e);
+    res.status(500).send("Something went wrong: " + error);
   }
 };
 
@@ -105,27 +102,26 @@ const deleteProduct = async (req, res, next) => {
   // console.log(req.params);
 };
 
-const mainCategoryFetch = async (req, res) => {
-  const { mainCat } = req.body;
-  try {
-    const product = await Product.find({
-      mainCat,
-    });
-    res.status(200).json(product);
-  } catch (error) {
-    res.status(500).send(error);
-  }
-};
+//when making a req to this endpoint,
+// {
+//   "categories": ["kids", "hoodies", "red"]
+// }
 
-const subCategoryFetch = async (req, res) => {
-  const { subCat } = req.body;
+const categoryFetchProducts = async (req, res) => {
   try {
-    const product = await Product.find({
-      subCat,
-    });
-    res.status(200).json(product);
-  } catch (error) {
-    res.status(500).send(error);
+    const { categories } = req.body;
+
+    if (!categories || !Array.isArray(categories) || categories.length === 0) {
+      return res.status(400).json({
+        message: "Categories field is required and must be a non-empty array",
+      });
+    }
+
+    const products = await Product.find({ categories: { $all: categories } });
+    res.json(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
@@ -267,10 +263,9 @@ module.exports = {
   fetchOnOffer,
   fetchTrending,
   fetchSpecificProduct,
-  mainCategoryFetch,
-  subCategoryFetch,
   deleteProduct,
   commentOnProduct,
   likeAProduct,
   updateSpecificProduct,
+  categoryFetchProducts,
 };
