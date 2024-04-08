@@ -139,9 +139,21 @@ const checkIfUserAlreadyExists = async (req, res) => {
 // http://localhost:8000/api/v1/user/:id
 const updateMyAccount = async (req, res) => {
   try {
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
+    const { password, ...restOfFields } = req.body;
+
+    // If the request includes a new password, hash it before updating
+    if (password) {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      restOfFields.password = hashedPassword;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      req.params.id,
+      restOfFields,
+      {
+        new: true,
+      }
+    );
 
     res.status(200).json(updatedUser);
   } catch (error) {
